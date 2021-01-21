@@ -11,3 +11,48 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+html {
+  overflow: hidden;
+}
+
+html, body, #root {
+  height: 100%;
+  /* overflow-x: hidden; */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.carousel-wrapper,
+.carousel-root,
+.carousel,
+.carousel > .slider-wrapper,
+.carousel > .slider-wrapper > .slider {
+  height: 100%;
+}
+
+.flex-carousel.slick-slider,
+.flex-carousel .slick-track,
+.flex-carousel .slick-slide > div,
+.flex-carousel > .slick-list {
+  height: 100%;
+}
+
+.itemWrapper {
+  height: 100%;
+  display: flex;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+*:focus {
+  outline: none;
+}
+
+.ui.input>input,
+.ui.buttons .button:first-child,
+.ui.buttons .button:last-child {
+  border-radius: 0;
+}
