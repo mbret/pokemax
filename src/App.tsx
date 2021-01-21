@@ -59,9 +59,6 @@ function App() {
 
       return true
     })
-
-    console.log(results.length)
-    setResults(results)
   }, [search, db, cardType, filters])
 
   const resultsGroupedByPokedexNumber = useMemo(() => {
@@ -72,7 +69,7 @@ function App() {
         res[existingGroupIndex] = [...res[existingGroupIndex] || [], currentValue]
         return res
       } else {
-        if (res.length > 5) return res
+        if (res.length > 30) return res
         return [...res, [currentValue]]
       }
     }, [])
