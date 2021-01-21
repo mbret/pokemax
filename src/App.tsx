@@ -37,8 +37,9 @@ function App() {
               .toLowerCase()
               .includes(value.toLowerCase())
           )
-        }) 
+        })
         && search !== card.japaneseNumber
+        && search !== `${card.japaneseNumber}/${card.japaneseSetNumberMax}`
       if (notIncluded) {
         // try to search illustrator
         const notArtistIncluded = search.split(' ').some(value => {
@@ -106,7 +107,14 @@ function App() {
                 <Button onClick={_ => setFilters(old => ({ ...old, V: !old['V'] }))} active={filters['V']}>V</Button>
               </Button.Group>
             </div>
-            <CardTypeSlider data={resultsGroupedByPokedexNumber} />
+            {resultsGroupedByPokedexNumber.length > 0
+              ? (
+                <CardTypeSlider data={resultsGroupedByPokedexNumber} />
+              ) : (
+                <div style={{ display: "flex", flexGrow: 1, flexDirection: 'column', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                  CHEH ! 
+                </div>
+              )}
           </div>
         )}
     </div>
