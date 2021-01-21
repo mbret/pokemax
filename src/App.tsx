@@ -10,7 +10,6 @@ import { Search } from './Search';
 // This only needs to be done once; probably during your application's bootstrapping process.
 import 'react-virtualized/styles.css'
 import { Button } from 'semantic-ui-react';
-import { writevSync } from 'fs';
 
 function App() {
   const [isReady, setIsReady] = useState(false)

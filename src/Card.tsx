@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from 'react'
 import { Card as CardType } from './types'
 import localforage from 'localforage'
-import { useMeasure, useMountedState } from 'react-use'
+import { useMeasure } from 'react-use'
 
 export const Card: FC<{ data: CardType, style: React.CSSProperties }> = ({ data, style }) => {
   const { imgData, retry } = useRetrieveImg(data.imageUrlHiRes, data.id)

@@ -1,22 +1,20 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react'
 import { Card as CardType } from './types'
-import { Card as CardComponent } from './Card';
 import Hammer from 'hammerjs'
 import { useWindowSize } from 'react-use';
 import { CardSwitcher } from './CardSwitcher';
 import Slider from "react-slick"
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { Carousel } from 'react-responsive-carousel'
 
 const sensitivity = 25
 
 export const CardTypeSlider: FC<{ data: CardType[][], style?: React.CSSProperties }> = ({ data, style }) => {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const [isAnimating, setIsAnimating] = useState(false)
+  const [, setIsAnimating] = useState(false)
   const timer = useRef<undefined | any>(undefined)
-  const [percentageCalculated, setPercentageCalculated] = useState(0)
-  const { width, height } = useWindowSize()
-  const [hammer, setHammer] = useState<HammerManager | undefined>(undefined)
+  const [, setPercentageCalculated] = useState(0)
+  const { width } = useWindowSize()
+  const [hammer] = useState<HammerManager | undefined>(undefined)
   // const { width, height } = useWindowSize()
 
   const goTo = useCallback((number: number) => {
