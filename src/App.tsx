@@ -59,6 +59,8 @@ function App() {
 
       return true
     })
+
+    setResults(results)
   }, [search, db, cardType, filters])
 
   const resultsGroupedByPokedexNumber = useMemo(() => {
