@@ -56,3 +56,12 @@ html, body, #root {
 .ui.buttons .button:last-child {
   border-radius: 0;
 }
+
+.ui.button:hover {
+  background-color: #e0e1e2;
+}
+
+.subType-filters .ui.button {
+  padding-left: 0;
+  padding-right: 0;
+}

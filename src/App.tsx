@@ -30,9 +30,15 @@ function App() {
 
   useEffect(() => {
     const results = db.filter(card => {
-      const notIncluded = search.split(' ').some(value => {
-        return !card.name.toLowerCase().includes(value.toLowerCase())
-      })
+      const notIncluded = search
+        .split(' ').some(value => {
+          return (
+            !card.name
+              .toLowerCase()
+              .includes(value.toLowerCase())
+          )
+        }) 
+        && search !== card.japaneseNumber
       if (notIncluded) {
         // try to search illustrator
         const notArtistIncluded = search.split(' ').some(value => {
@@ -54,6 +60,7 @@ function App() {
       return true
     })
 
+    console.log(results.length)
     setResults(results)
   }, [search, db, cardType, filters])
 
@@ -71,8 +78,6 @@ function App() {
     }, [])
   }, [results])
 
-  // console.log(results, resultsGroupedByPokedexNumber)
-
   return (
     <div style={{ height: '100%' }}>
       {!isReady ? (
@@ -84,7 +89,7 @@ function App() {
             flexDirection: 'column',
           }}>
             {/* <input type="text" onChange={e => setSearch(e.target.value)} value={search} /> */}
-            <Search onChange={(e, value) => setSearch(e.target.value)} style={{flexShrink: 0, flexGrow: 1}} />
+            <Search onChange={(e, value) => setSearch(e.target.value)} style={{ flexShrink: 0, flexGrow: 1 }} />
             <div style={{ flexShrink: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
               <Button.Group>
                 <Button onClick={_ => setCardType('pokemon')} active={cardType === 'pokemon'}>Pokemon</Button>
@@ -93,7 +98,7 @@ function App() {
               </Button.Group>
             </div>
             <div style={{ flexShrink: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-              <Button.Group>
+              <Button.Group className="subType-filters">
                 <Button onClick={_ => setFilters(old => ({ ...old, Basic: !old['Basic'] }))} active={filters['Basic']}>basic</Button>
                 <Button onClick={_ => setFilters(old => ({ ...old, 'Stage 1': !old['Stage 1'] }))} active={filters['Stage 1']}>S1</Button>
                 <Button onClick={_ => setFilters(old => ({ ...old, 'Stage 2': !old['Stage 2'] }))} active={filters['Stage 2']}>S2</Button>
