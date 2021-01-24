@@ -67,6 +67,10 @@ export const Search: FC<{
     const resultsGroupedByPokedexNumber = results.reduce((res: Card[][], currentValue) => {
       const existingGroupIndex = res.findIndex(card => card[0].nationalPokedexNumber === currentValue.nationalPokedexNumber)
       if (existingGroupIndex >= 0) {
+        if (res[existingGroupIndex].length > 100) {
+          searchTruncated = true
+          return res
+        }
         res[existingGroupIndex] = [...res[existingGroupIndex] || [], currentValue]
         return res
       } else {
