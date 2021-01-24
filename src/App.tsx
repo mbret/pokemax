@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
-import { Card } from './types';
 import { CardTypeSlider } from './CardTypeSlider';
-import { Search } from './Search';
+import { Search, searchResultsState, isSearchTruncatedState } from './Search';
 // Most of react-virtualized's styles are functional (eg position, size).
 // Functional styles are applied directly to DOM elements.
 // The Table component ships with a few presentational styles as well.
@@ -10,77 +9,34 @@ import { Search } from './Search';
 // This only needs to be done once; probably during your application's bootstrapping process.
 import 'react-virtualized/styles.css'
 import { Button } from 'semantic-ui-react';
+import { useRecoilValue } from 'recoil';
+import { useLoadDb, isDbLoadedState } from './useDb';
 
 function App() {
-  const [isReady, setIsReady] = useState(false)
   const [cardType, setCardType] = useState<'pokemon' | 'item'>('pokemon')
   const [filters, setFilters] = useState<{ Basic?: boolean, 'Stage 1'?: boolean, 'Stage 2'?: boolean, GX?: boolean, EX?: boolean, V?: boolean }>({})
-  const [db, setDb] = useState<Card[]>([])
-  const [search, setSearch] = useState('')
-  const [results, setResults] = useState<Card[]>([])
+  const isDbLoaded = useRecoilValue(isDbLoadedState)
+  const results = useRecoilValue(searchResultsState)
+  const isSearchTruncated = useRecoilValue(isSearchTruncatedState)
+  const [searchReleased, setSearchReleased] = useState(true)
 
   useEffect(() => {
-    (async () => {
-      const response = await fetch('/db.json')
+    setSearchReleased(false)
 
-      setDb(await response.json())
-      setIsReady(true)
-    })()
-  }, [])
+    const ts = setTimeout(() => {
+      setSearchReleased(true)
+    }, 200)
 
-  useEffect(() => {
-    const results = db.filter(card => {
-      const notIncluded = search
-        .split(' ').some(value => {
-          return (
-            !card.name
-              .toLowerCase()
-              .includes(value.toLowerCase())
-          )
-        })
-        && search !== card.japaneseNumber
-        && search !== `${card.japaneseNumber}/${card.japaneseSetNumberMax}`
-      if (notIncluded) {
-        // try to search illustrator
-        const notArtistIncluded = search.split(' ').some(value => {
-          return !card.artist?.toLowerCase().includes(value.toLowerCase())
-        })
-
-        if (notArtistIncluded) {
-          return false
-        }
-      }
-      if (cardType === 'pokemon' && card.nationalPokedexNumber === undefined) return false
-      if (cardType === 'item' && card.nationalPokedexNumber !== undefined) return false
-
-      if (Object.keys(filters).some(key => filters[key as keyof typeof filters])) {
-        const isWithinFilterSubTypes = Object.keys(filters).some((filterKey) => filters[filterKey as keyof typeof filters] && card.subtype === filterKey)
-        if (!isWithinFilterSubTypes) return false
-      }
-
-      return true
-    })
-
-    setResults(results)
-  }, [search, db, cardType, filters])
-
-  const resultsGroupedByPokedexNumber = useMemo(() => {
-    return results.reduce((res: Card[][], currentValue) => {
-      const existingGroupIndex = res.findIndex(card => card[0].nationalPokedexNumber === currentValue.nationalPokedexNumber)
-      if (existingGroupIndex > -1) {
-        if (res[existingGroupIndex].length > 40) return res
-        res[existingGroupIndex] = [...res[existingGroupIndex] || [], currentValue]
-        return res
-      } else {
-        if (res.length > 30) return res
-        return [...res, [currentValue]]
-      }
-    }, [])
+    return () => clearTimeout(ts)
   }, [results])
+
+  useLoadDb()
+
+  console.log('App', results)
 
   return (
     <div style={{ height: '100%' }}>
-      {!isReady ? (
+      {!isDbLoaded ? (
         <div>loading database</div>
       ) : (
           <div style={{
@@ -88,8 +44,7 @@ function App() {
             display: 'flex',
             flexDirection: 'column',
           }}>
-            {/* <input type="text" onChange={e => setSearch(e.target.value)} value={search} /> */}
-            <Search onChange={(e, value) => setSearch(e.target.value)} style={{ flexShrink: 0, flexGrow: 1 }} />
+            <Search cardType={cardType} filters={filters} style={{ flexShrink: 0, flexGrow: 1 }} />
             <div style={{ flexShrink: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
               <Button.Group>
                 <Button onClick={_ => setCardType('pokemon')} active={cardType === 'pokemon'}>Pokemon</Button>
@@ -107,12 +62,19 @@ function App() {
                 <Button onClick={_ => setFilters(old => ({ ...old, V: !old['V'] }))} active={filters['V']}>V</Button>
               </Button.Group>
             </div>
-            {resultsGroupedByPokedexNumber.length > 0
+            {isSearchTruncated && (
+              <div style={{ fontSize: 13, color: '#f2711c', textAlign: 'center' }}>
+                Results truncated! Try to narrow down the search
+              </div>
+            )}
+            {results.length > 0 && searchReleased
               ? (
-                <CardTypeSlider data={resultsGroupedByPokedexNumber} />
+                <>
+                  <CardTypeSlider data={results} />
+                </>
               ) : (
                 <div style={{ display: "flex", flexGrow: 1, flexDirection: 'column', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                  CHEH ! 
+                  {!searchReleased && results.length > 0 ? 'Searching...' : 'CHEH !'}
                 </div>
               )}
           </div>

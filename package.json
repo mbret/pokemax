@@ -21,6 +21,7 @@
     "react-slick": "^0.27.14",
     "react-use": "^15.3.8",
     "react-virtualized": "^9.22.3",
+    "recoil": "^0.1.2",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.2",
     "slick-carousel": "^1.8.1",
@@ -31,7 +32,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "serve-prod": "serve -s build -l 3000",
+    "start-prod": "npm run build && npm run serve-prod"
   },
   "eslintConfig": {
     "extends": [
