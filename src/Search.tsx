@@ -36,6 +36,7 @@ export const Search: FC<{
           )
         })
         && search !== card.japaneseNumber
+        && search !== card.nationalPokedexNumber?.toString()
         && search !== `${card.japaneseNumber}/${card.japaneseSetNumberMax}`
       if (notIncluded) {
         // try to search illustrator
@@ -66,9 +67,6 @@ export const Search: FC<{
     const resultsGroupedByPokedexNumber = results.reduce((res: Card[][], currentValue) => {
       const existingGroupIndex = res.findIndex(card => card[0].nationalPokedexNumber === currentValue.nationalPokedexNumber)
       if (existingGroupIndex >= 0) {
-        if (res[existingGroupIndex].length > 30) {
-          searchTruncated = true
-        }
         res[existingGroupIndex] = [...res[existingGroupIndex] || [], currentValue]
         return res
       } else {
