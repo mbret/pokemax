@@ -6,6 +6,15 @@ export type Card = {
   nationalPokedexNumber?: number
   subtype?: string
   artist?: string
-  japaneseNumber?: string,
-  japaneseSetNumberMax?: string
+  japaneseExpansions?: {
+    name: string,
+    id: string,
+    number: string,
+    numberMax: string,
+  }[]
+  set?: string,
+  setCode?: string
+  series?: string
+  number?: string
+  rarity?: string
 }

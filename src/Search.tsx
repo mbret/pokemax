@@ -24,9 +24,17 @@ export const Search: FC<{
   const setSearchResultsState = useSetRecoilState(searchResultsState)
   const setIsSearchTruncatedState = useSetRecoilState(isSearchTruncatedState)
   const db = useRecoilValue(dbState)
-  
+
   useEffect(() => {
+    const words = search.replace(/\s+/g, ' ').split(' ').map(word => `(?=.*${word})`).join('')
+    const containsAtLeastWordsInAnyOrder = new RegExp(`${words}.*`, 'ig')
+    console.log('search regex', containsAtLeastWordsInAnyOrder)
+
     const results = db.filter(card => {
+      // ex: (?=.*pt2)(?=.*042).*
+      // const words = search.replace(/\s+/g,' ')
+      // const words = 'asd'
+
       const notIncluded = search
         .split(' ').some(value => {
           return (
@@ -35,9 +43,10 @@ export const Search: FC<{
               .includes(value.toLowerCase())
           )
         })
-        && search !== card.japaneseNumber
-        && search !== card.nationalPokedexNumber?.toString()
-        && search !== `${card.japaneseNumber}/${card.japaneseSetNumberMax}`
+        // && !card.japaneseExpansions?.some(expansion => search === expansion.number)
+        // && !card.japaneseExpansions?.some(expansion => search === expansion.id)
+        // && !card.japaneseExpansions?.some(expansion => search === `${expansion.number}/${expansion.numberMax}`)
+        && !card.japaneseExpansions?.some(expansion => (containsAtLeastWordsInAnyOrder.exec(`${expansion.id} ${expansion.number}/${expansion.numberMax}`)?.length || 0) > 0)
       if (notIncluded) {
         // try to search illustrator
         const notArtistIncluded = search.split(' ').some(value => {
