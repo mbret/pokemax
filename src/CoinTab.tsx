@@ -7,7 +7,7 @@ import { useWindowSize } from "react-use";
 export const CoinTab = () => {
   const [head, setHead] = useState<undefined | boolean>(undefined)
   const { width, height } = useWindowSize()
-  let coinWidth = width < height ? width * 0.4 : height * 0.4
+  let coinWidth = width < height ? width * 0.5 : height * 0.5
   // if (coinWidth > 300) {}
 
   const onFlip = () => {
