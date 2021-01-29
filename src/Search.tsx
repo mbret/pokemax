@@ -31,10 +31,6 @@ export const Search: FC<{
     console.log('search regex', containsAtLeastWordsInAnyOrder)
 
     const results = db.filter(card => {
-      // ex: (?=.*pt2)(?=.*042).*
-      // const words = search.replace(/\s+/g,' ')
-      // const words = 'asd'
-
       const notIncluded = search
         .split(' ').some(value => {
           return (
@@ -43,9 +39,8 @@ export const Search: FC<{
               .includes(value.toLowerCase())
           )
         })
-        // && !card.japaneseExpansions?.some(expansion => search === expansion.number)
-        // && !card.japaneseExpansions?.some(expansion => search === expansion.id)
-        // && !card.japaneseExpansions?.some(expansion => search === `${expansion.number}/${expansion.numberMax}`)
+        // search for japanese set
+        // "pt2 042..." -> pt2 042/090
         && !card.japaneseExpansions?.some(expansion => (containsAtLeastWordsInAnyOrder.exec(`${expansion.id} ${expansion.number}/${expansion.numberMax}`)?.length || 0) > 0)
       if (notIncluded) {
         // try to search illustrator
