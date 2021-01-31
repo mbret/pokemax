@@ -1,3 +1,11 @@
+/**
+ * Standalone module that provide conveniant and flexible way to retrieve and cache assets.
+ * It supports:
+ * - download retry
+ * - general failure retry after timeout
+ * - support both blob and base64 for older browsers
+ * - parallel download of different quality of same assets and display of lower res while higher res get available
+ */
 import { useEffect, useMemo, useState } from "react"
 import { atom, selectorFamily, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import localforage from 'localforage'
